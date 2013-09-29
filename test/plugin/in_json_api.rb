@@ -68,9 +68,9 @@ class FileInputTest < Test::Unit::TestCase
                 assert item['author']['content'].to_f <= 5.0
 
                 #link
-                assert_equal URI.parse(item['link']).scheme, 'http'
+                assert_equal URI.parse(item['link']).scheme, 'http' if item['link']
                 #title
-                assert_equal URI.parse(item['title']).scheme, 'http'
+                assert_equal URI.parse(item['title']).scheme, 'http' if item['title']
 
                 #description
                 assert_not_nil item['description']
@@ -78,6 +78,16 @@ class FileInputTest < Test::Unit::TestCase
                 #pubDate
                 assert_not_nil item['pubDate']['content']
             end
+        end
+
+        #parse error
+        assert_raise JSON::ParserError do
+            @d.instance.crawl 'http://www.rakuten.co.jp'
+        end
+
+        #404 Not found
+        assert_raise Fluent::JsonApiError do
+            @d.instance.crawl 'http://www.google.com/404'
         end
     end
 end
