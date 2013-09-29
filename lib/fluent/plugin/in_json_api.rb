@@ -1,4 +1,6 @@
 module Fluent
+    class JsonApiError < StandardError
+    end
     class JsonApiInput < Input
         Plugin.register_input('json_api', self)
 
@@ -28,6 +30,15 @@ module Fluent
         end
 
         def run
+        end
+
+        def crawl(url)
+            response = Net::HTTP.get_response(URI.parse(url))
+            case response
+            when Net::HTTPSuccess
+                return JSON.parse response.body
+            end
+            raise Fluent::JsonApiError.new
         end
 
         def shutdown
