@@ -9,6 +9,7 @@ class FileInputTest < Test::Unit::TestCase
         @d = create_driver %[
             url   http://pipes.yahoo.com/pipes/pipe.run?_id=c9b9df32b4c3e0ccbe4547ae7e00ed2f&_render=json&condition=d7D&genre=100533&page=__PAGE__
             max_page    10
+            sleep       1
             tag     input.json
         ]
         @time = Time.now.to_i
@@ -21,23 +22,28 @@ class FileInputTest < Test::Unit::TestCase
     def test_configure
         assert_equal 'http://pipes.yahoo.com/pipes/pipe.run?_id=c9b9df32b4c3e0ccbe4547ae7e00ed2f&_render=json&condition=d7D&genre=100533&page=__PAGE__'   , @d.instance.url
         assert_equal 10          , @d.instance.max_page
+        assert_equal 1           , @d.instance.sleep
         assert_equal 'input.json', @d.instance.tag
         [ %[
                 url   hoge
                 max_page    10
+                sleep       1
                 tag     input.json
             ],
           %[
                 url   ftp://hoge.com
                 max_page    10
+                sleep       1
                 tag     input.json
             ],
           %[
                 url   http://hoge.com
+                sleep       1
                 max_page    10
             ],
           %[
                 url   http://hoge.com
+                sleep       1
                 max_page    hoge
             ]
         ].each do |config|
