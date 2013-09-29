@@ -7,8 +7,9 @@ class FileInputTest < Test::Unit::TestCase
         Fluent::Test.setup
 
         @d = create_driver %[
-            url   http://pipes.yahoo.com/pipes/pipe.run?_id=c9b9df32b4c3e0ccbe4547ae7e00ed2f&_render=json&condition=d7D&genre=100533&page=__PAGE__
-            max_page    10
+            url   http://pipes.yahoo.com/pipes/pipe.run?_id=c9b9df32b4c3e0ccbe4547ae7e00ed2f&_render=json&condition=d7D&genre=__GENRE__&page=__PAGE__
+            pairs   {'__PAGE__' => (1..10),'__GENRE__' => [1,100533]} 
+            sleep       1
             tag     input.json
         ]
         @time = Time.now.to_i
@@ -19,26 +20,37 @@ class FileInputTest < Test::Unit::TestCase
     end
 
     def test_configure
-        assert_equal 'http://pipes.yahoo.com/pipes/pipe.run?_id=c9b9df32b4c3e0ccbe4547ae7e00ed2f&_render=json&condition=d7D&genre=100533&page=__PAGE__'   , @d.instance.url
-        assert_equal 10          , @d.instance.max_page
+        assert_equal 'http://pipes.yahoo.com/pipes/pipe.run?_id=c9b9df32b4c3e0ccbe4547ae7e00ed2f&_render=json&condition=d7D&genre=__GENRE__&page=__PAGE__'   , @d.instance.url
+        assert_equal @d.instance.pairs.size, 20
+        assert_equal 1           , @d.instance.sleep
         assert_equal 'input.json', @d.instance.tag
         [ %[
                 url   hoge
-                max_page    10
+                pairs   {'__PAGE__' => (1..10)}
+                sleep       1
                 tag     input.json
             ],
           %[
                 url   ftp://hoge.com
-                max_page    10
+                pairs   {'__PAGE__' => (1..10)}
+                sleep       1
                 tag     input.json
             ],
           %[
                 url   http://hoge.com
-                max_page    10
+                sleep       1
+                pairs   {'__PAGE__' => (1..10)}
             ],
           %[
                 url   http://hoge.com
-                max_page    hoge
+                sleep       1
+                pairs   {'__PAGE__' => (1..10)}
+            ],
+          %[
+                url   http://hoge.com
+                sleep       1
+                pairs   {__PAGE__}
+                tag     input.json
             ]
         ].each do |config|
             assert_raise Fluent::ConfigError do
@@ -48,10 +60,14 @@ class FileInputTest < Test::Unit::TestCase
     end
 
     def test_urls
-        page = 1
-        @d.instance.urls.each do |url|
-            assert_equal "http://pipes.yahoo.com/pipes/pipe.run?_id=c9b9df32b4c3e0ccbe4547ae7e00ed2f&_render=json&condition=d7D&genre=100533&page=#{page}", url
-            page += 1
+        assert_equal @d.instance.urls.size, 20
+        index = 0
+        (1..10).each do |page|
+            [1,100533].each do |genre|
+                assert_equal "http://pipes.yahoo.com/pipes/pipe.run?_id=c9b9df32b4c3e0ccbe4547ae7e00ed2f&_render=json&condition=d7D&genre=#{genre}&page=#{page}", @d.instance.urls[index]
+
+                index += 1
+            end
         end
     end
 
