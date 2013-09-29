@@ -1,23 +1,21 @@
-# coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'fluent/plugin/json/api/version'
+# -*- encoding: utf-8 -*-
+$:.push File.expand_path("../lib", __FILE__)
 
-Gem::Specification.new do |spec|
-  spec.name          = "fluent-plugin-json-api"
-  spec.version       = Fluent::Plugin::Json::Api::VERSION
-  spec.authors       = ["Freddie Fujiwara"]
-  spec.email         = ["github@ze.gs"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
-  spec.license       = "MIT"
+Gem::Specification.new do |s|
+  s.name        = "fluent-plugin-json-api"
+  s.version     = "0.0.1"
+  s.platform    = Gem::Platform::RUBY
+  s.authors     = ["Freddie Fujiwara"]
+  s.date        = %q{2013-09-29}
+  s.email       = "github@ze.gs"
+  s.homepage    = "http://github.com/freddiefujiwara/fluent-plugin-json-api"
+  s.summary     = "json-api plugin for Fluentd"
 
-  spec.files         = `git ls-files`.split($/)
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
-  spec.require_paths = ["lib"]
+  s.files         = `git ls-files`.split("\n")
+  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  s.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.3"
-  spec.add_development_dependency "rake"
+  s.add_dependency %q<fluentd>, ["~> 0.10.0"]
+  s.add_dependency %q<json>, ["~> 2.2.2"]
 end
