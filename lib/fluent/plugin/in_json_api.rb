@@ -30,6 +30,11 @@ module Fluent
         end
 
         def run
+            loop {
+                @urls.each do |url|
+                    Engine.emit @tag, Engine.now , crawl(url)
+                end
+            }
         end
 
         def crawl(url)
