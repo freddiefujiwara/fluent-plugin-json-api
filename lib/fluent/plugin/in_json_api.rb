@@ -6,6 +6,7 @@ module Fluent
 
         config_param :url,      :string,  :default => 'http://pipes.yahoo.com/pipes/pipe.run?_id=c9b9df32b4c3e0ccbe4547ae7e00ed2f&_render=json&condition=d7D&genre=100533&page=__PAGE__'
         config_param :max_page, :integer, :default =>  1000
+        config_param :sleep   , :integer, :default =>  0
         config_param :tag,      :string
 
         attr_reader :urls
@@ -33,6 +34,7 @@ module Fluent
             loop {
                 @urls.each do |url|
                     Engine.emit @tag, Engine.now , crawl(url)
+                    sleep @sleep if @sleep.to_i > 0
                 end
             }
         end
