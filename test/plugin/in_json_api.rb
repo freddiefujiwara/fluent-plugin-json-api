@@ -8,7 +8,7 @@ class FileInputTest < Test::Unit::TestCase
 
         @d = create_driver %[
             url   http://pipes.yahoo.com/pipes/pipe.run?_id=c9b9df32b4c3e0ccbe4547ae7e00ed2f&_render=json&condition=d7D&genre=__GENRE__&page=__PAGE__
-            pairs   {'__PAGE__' => (1..10),'__GENRE__' => [1,100533]} 
+            rules   {'__PAGE__' => (1..10),'__GENRE__' => [1,100533]} 
             sleep       1
             tag     input.json
         ]
@@ -21,37 +21,38 @@ class FileInputTest < Test::Unit::TestCase
 
     def test_configure
         assert_equal 'http://pipes.yahoo.com/pipes/pipe.run?_id=c9b9df32b4c3e0ccbe4547ae7e00ed2f&_render=json&condition=d7D&genre=__GENRE__&page=__PAGE__'   , @d.instance.url
-        assert_equal @d.instance.pairs.size, 20
+        assert_equal @d.instance.rules.size, 20 #10(page) x 2(genre)
         assert_equal 1           , @d.instance.sleep
         assert_equal 'input.json', @d.instance.tag
         [ %[
                 url   hoge
-                pairs   {'__PAGE__' => (1..10)}
+                rules   {'__PAGE__' => (1..10)}
                 sleep       1
                 tag     input.json
-            ],
+            ], #url wrong
           %[
                 url   ftp://hoge.com
-                pairs   {'__PAGE__' => (1..10)}
+                rules   {'__PAGE__' => (1..10)}
                 sleep       1
                 tag     input.json
-            ],
+            ], #url must start at http
           %[
                 url   http://hoge.com
                 sleep       1
-                pairs   {'__PAGE__' => (1..10)}
-            ],
+                rules   {'__PAGE__' => (1..10)}
+            ], #no tag
           %[
                 url   http://hoge.com
                 sleep       1
-                pairs   {'__PAGE__' => (1..10)}
-            ],
-          %[
-                url   http://hoge.com
-                sleep       1
-                pairs   {__PAGE__}
+                rules   {__PAGE__}
                 tag     input.json
-            ]
+            ], #rules must be {'key' => array}
+          %[
+                url   http://hoge.com
+                sleep       1
+                rules   (1..2)
+                tag     input.json
+            ], #rules must be {'key' => array}
         ].each do |config|
             assert_raise Fluent::ConfigError do
                 create_driver config
