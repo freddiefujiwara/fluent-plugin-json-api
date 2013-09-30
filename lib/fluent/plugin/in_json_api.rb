@@ -5,7 +5,7 @@ module Fluent
         Plugin.register_input('json_api', self)
 
         config_param :url,      :string,  :default => 'http://pipes.yahoo.com/pipes/pipe.run?_id=c9b9df32b4c3e0ccbe4547ae7e00ed2f&_render=json&condition=d7D&genre=100533&page=__PAGE__'
-        config_param :pairs   , :string
+        config_param :rules   , :string
         config_param :sleep   , :integer, :default =>  0
         config_param :tag,      :string
 
@@ -21,16 +21,22 @@ module Fluent
             super
 
             begin
-                pairs_hash  = eval config['pairs']
-                result = [] 
-                pairs_hash.each_pair {|k,v| arr = []; (v.to_a).each {|i| arr << {k=>i}}; result << arr}
-                @pairs = result[0].product(*result[1..-1])
-            rescue SyntaxError
-                raise Fluent::ConfigError.new
+                result = []
+                (eval config['rules']).each_pair do |key,replecements|
+                    combinations = []
+                    (replecements.to_a).each do |replacement|
+                        combinations << {key => replacement}
+                    end 
+                    result << combinations
+                end
+
+                @rules = result[0].product(*result[1..-1])
+            rescue SyntaxError,StandardError => e 
+                raise Fluent::ConfigError.new "rules has some errors #{e}"
             end
 
             raise Fluent::ConfigError unless ['http','https'].include? URI.parse(config['url']).scheme
-            @pairs.each do |pair|
+            @rules.each do |pair|
                 url = config['url']
                 pair.each do |key_replacements|
                     key_replacements.each do |key,replacement|
