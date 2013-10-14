@@ -77,23 +77,25 @@ class FileInputTest < Test::Unit::TestCase
             url = "http://pipes.yahoo.com/pipes/pipe.run?_id=c9b9df32b4c3e0ccbe4547ae7e00ed2f&_render=json&condition=d7D&genre=100533&page=#{page}"
             response = @d.instance.crawl url
             assert_not_nil response
-            assert_equal response['count'], 30
-            assert_equal response['value']['items'].size, 30
-            response['value']['items'].each do |item|
-                #content
-                assert item['author']['content'].to_f >= 0.0
-                assert item['author']['content'].to_f <= 5.0
-
-                #link
-                assert_equal URI.parse(item['link']).scheme, 'http' if item['link']
-                #title
-                assert_equal URI.parse(item['title']).scheme, 'http' if item['title']
-
-                #description
-                assert_not_nil item['description']
-
-                #pubDate
-                assert_not_nil item['pubDate']['content']
+            if response['count'].to_i > 0
+                assert_equal response['count'], 30
+                assert_equal response['value']['items'].size, 30
+                response['value']['items'].each do |item|
+                    #content
+                    assert item['author']['content'].to_f >= 0.0
+                    assert item['author']['content'].to_f <= 5.0
+    
+                    #link
+                    assert_equal URI.parse(item['link']).scheme, 'http' if item['link']
+                    #title
+                    assert_equal URI.parse(item['title']).scheme, 'http' if item['title']
+    
+                    #description
+                    assert_not_nil item['description']
+    
+                    #pubDate
+                    assert_not_nil item['pubDate']['content']
+                end
             end
         end
 
