@@ -17,5 +17,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency %q<fluentd>, ["~> 0.10.0"]
+  s.add_dependency %q<rake>, ["~> 0.9.6"]
   s.license = 'MIT'
 end
