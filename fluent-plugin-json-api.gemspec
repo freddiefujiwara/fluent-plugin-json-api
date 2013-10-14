@@ -3,10 +3,10 @@ $:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = "fluent-plugin-json-api"
-  s.version     = "0.0.1"
+  s.version     = "0.0.2"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Freddie Fujiwara"]
-  s.date        = %q{2013-09-29}
+  s.date        = %q{2013-10-14}
   s.email       = "github@ze.gs"
   s.homepage    = "http://github.com/freddiefujiwara/fluent-plugin-json-api"
   s.summary     = "json-api plugin for Fluentd"
@@ -17,4 +17,5 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency %q<fluentd>, ["~> 0.10.0"]
+  s.license = 'MIT'
 end
