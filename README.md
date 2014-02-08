@@ -1,4 +1,4 @@
-# Fluent::Plugin::Json::Api
+# Fluent::Plugin::Json::Api, a plugin for [Fluentd](http://fluentd.org)
 
 TODO: Write a gem description
 
