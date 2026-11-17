@@ -7,7 +7,6 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Freddie Fujiwara"]
   s.date        = %q{2013-10-14}
-  s.email       = "github@ze.gs"
   s.homepage    = "http://github.com/freddiefujiwara/fluent-plugin-json-api"
   s.summary     = "json-api plugin for Fluentd"
 
